@@ -1,5 +1,15 @@
 require 'sinatra'
 
-get '/frank-says' do
-  'Put this in your pipe & smoke it!'
+get '/ifttt/v1/status' do
+  {
+    "data": {
+      "samples": {
+        "triggers": {
+          "search-trigger": {
+            "keywords": ""
+          }
+        }
+      }
+    }
+  }.to_json
 end
