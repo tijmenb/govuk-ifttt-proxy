@@ -1,7 +1,7 @@
 require 'sinatra'
 
 get '/ifttt/v1/status' do
-  halt 403 unless request['IFTTT-Channel-Key'] == ENV["IFFT_SERVICE_KEY"]
+  halt 401 unless request['IFTTT-Channel-Key'] == ENV["IFFT_SERVICE_KEY"]
 
   {
     "data": {
