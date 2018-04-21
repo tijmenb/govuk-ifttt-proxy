@@ -24,7 +24,7 @@ post '/ifttt/v1/test/setup' do
       "samples": {
         "triggers": {
           "search-trigger": {
-            "keywords": ""
+            "keywords": "what then"
           }
         }
       }
