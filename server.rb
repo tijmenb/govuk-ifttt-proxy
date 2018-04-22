@@ -114,7 +114,7 @@ post '/ifttt/v1/triggers/companies' do
   data = JSON.parse(request.body.read)
   company_number = data.dig("triggerFields", "company_number")
 
-  halt 400, { errors: [ { message: "Company number not specified" }] }.to_json unless register_id
+  halt 400, { errors: [ { message: "Company number not specified" }] }.to_json unless company_number
 
   filing_history = JSON.parse(HTTP.auth(ENV["COMPANIES_HOUSE_API_KEY"]).get("https://api.companieshouse.gov.uk/company/#{company_number}/filing-history"))["items"]
 
