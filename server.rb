@@ -104,3 +104,27 @@ post '/ifttt/v1/triggers/registers' do
 
   { data: entries }.to_json
 end
+
+post '/ifttt/v1/triggers/companies' do
+  halt 401, { errors: [ { message: "Wrong channel key" }] }.to_json unless request.env.fetch('HTTP_IFTTT_CHANNEL_KEY') == ENV.fetch("IFFT_SERVICE_KEY")
+
+  data = JSON.parse(request.body.read)
+  company_number = data.dig("triggerFields", "company_number")
+
+  halt 400, { errors: [ { message: "Company number not specified" }] }.to_json unless register_id
+
+  filing_history = JSON.parse(HTTP.auth(ENV["COMPANIES_HOUSE_API_KEY"]).get("https://api.companieshouse.gov.uk/company/#{company_number}/filing-history"))["items"]
+
+  entries = filing_history.first(data["limit"] || 50).map do |entry|
+    {
+      summary: entry["description"],
+      company_url: "https://beta.companieshouse.gov.uk/company/#{company_number}",
+      meta: {
+        id: entry["transaction_id"],
+        timestamp: Time.parse(entry["action_date"]).to_i,
+      }
+    }
+  end
+
+  { data: entries }.to_json
+end
