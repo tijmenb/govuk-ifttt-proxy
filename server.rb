@@ -1,14 +1,15 @@
 require 'sinatra'
 require 'http'
+require 'digest'
 
 get '/ifttt/v1/status' do
-  halt 401 unless request.env.fetch('HTTP_IFTTT_CHANNEL_KEY') == ENV["IFFT_SERVICE_KEY"]
+  halt 401 unless request.env.fetch('HTTP_IFTTT_CHANNEL_KEY') == ENV.fetch("IFFT_SERVICE_KEY")
 
   { status: "OK" }.to_json
 end
 
 post '/ifttt/v1/test/setup' do
-  halt 401 unless request.env.fetch('HTTP_IFTTT_CHANNEL_KEY') == ENV["IFFT_SERVICE_KEY"]
+  halt 401 unless request.env.fetch('HTTP_IFTTT_CHANNEL_KEY') == ENV.fetch("IFFT_SERVICE_KEY")
 
   {
     "data": {
@@ -24,16 +25,30 @@ post '/ifttt/v1/test/setup' do
 end
 
 post '/ifttt/v1/triggers/search-trigger' do
-  halt 401 unless request.env.fetch('HTTP_IFTTT_CHANNEL_KEY') == ENV["IFFT_SERVICE_KEY"]
+  # halt 401 unless request.env.fetch('HTTP_IFTTT_CHANNEL_KEY') == ENV.fetch("IFFT_SERVICE_KEY")
 
   data = JSON.parse(request.body.read)
   keywords = data["triggerFields"]["keywords"]
+  url = "https://www.gov.uk/api/search.json?q=#{keywords}&order=-public_timestamp&fields=public_timestamp,link,title"
+  puts "URL: #{url}"
 
-  response = HTTP.get("http://gov.uk/api/search.json?q=#{keywords}")
+  response = JSON.parse(HTTP.get(url))
 
-  entries = response["results"]
+  puts "Search response: #{response}"
 
-  {
-    "data": entries,
-  }.to_json
+  entries = response["results"].map do |result|
+    public_timestamp = Time.parse(result["public_timestamp"])
+
+    {
+      title: result["title"],
+      url: result["link"],
+      created_at: public_timestamp,
+      meta: {
+        id: Digest::MD5.hexdigest(result["public_timestamp"]),
+        timestamp: public_timestamp.to_i,
+      }
+    }
+  end
+
+  { data: entries }.to_json
 end
