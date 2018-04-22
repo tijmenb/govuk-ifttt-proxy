@@ -38,8 +38,8 @@ post '/ifttt/v1/triggers/search-trigger' do
 
     {
       title: result["title"],
-      url: result["link"],
-      created_at: public_timestamp,
+      url: "https://www.gov.uk#{result["link"]}",
+      created_at: public_timestamp.iso8601,
       meta: {
         id: Digest::MD5.hexdigest(result["public_timestamp"]),
         timestamp: public_timestamp.to_i,
