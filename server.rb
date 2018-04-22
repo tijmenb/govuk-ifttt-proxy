@@ -93,7 +93,7 @@ post '/ifttt/v1/triggers/registers' do
       title: "https://#{register_id}.register.gov.uk/record/#{entry["key"]} has been updated",
       meta: {
         id: entry["index-entry-number"],
-        timestamp: Time.parse(entry["entry-timestamp"]),
+        timestamp: Time.parse(entry["entry-timestamp"]).to_i,
       }
     }
   end
