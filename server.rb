@@ -36,8 +36,6 @@ post '/ifttt/v1/triggers/search-trigger' do
   limit = data["limit"] || 50
   response = JSON.parse(HTTP.get("https://www.gov.uk/api/search.json", params: { count: limit, q: keywords, order: '-public_timestamp', fields: %w[public_timestamp link title]}))
 
-  puts "Search response: #{response}"
-
   entries = response["results"].map do |result|
     public_timestamp = Time.parse(result["public_timestamp"])
 
