@@ -25,7 +25,7 @@ post '/ifttt/v1/test/setup' do
 end
 
 post '/ifttt/v1/triggers/search-trigger' do
-  # halt 401 unless request.env.fetch('HTTP_IFTTT_CHANNEL_KEY') == ENV.fetch("IFFT_SERVICE_KEY")
+  halt 401 unless request.env.fetch('HTTP_IFTTT_CHANNEL_KEY') == ENV.fetch("IFFT_SERVICE_KEY")
 
   data = JSON.parse(request.body.read)
   keywords = data.dig("triggerFields", "keywords")
