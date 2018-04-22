@@ -1,7 +1,21 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    addressable (2.5.0)
+      public_suffix (~> 2.0, >= 2.0.2)
+    domain_name (0.5.20170223)
+      unf (>= 0.0.5, < 1.0.0)
+    http (2.2.1)
+      addressable (~> 2.3)
+      http-cookie (~> 1.0)
+      http-form_data (~> 1.0.1)
+      http_parser.rb (~> 0.6.0)
+    http-cookie (1.0.3)
+      domain_name (~> 0.5)
+    http-form_data (1.0.1)
+    http_parser.rb (0.6.0)
     mustermann (1.0.2)
+    public_suffix (2.0.5)
     puma (3.11.4)
     rack (2.0.4)
     rack-protection (2.0.1)
@@ -13,11 +27,15 @@ GEM
       rack-protection (= 2.0.1)
       tilt (~> 2.0)
     tilt (2.0.8)
+    unf (0.1.4)
+      unf_ext
+    unf_ext (0.0.7.2)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
+  http
   puma
   rake
   sinatra
