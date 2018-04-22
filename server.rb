@@ -68,12 +68,13 @@ end
 post '/ifttt/v1/triggers/registers/fields/register/options' do
   halt 401, { errors: [ { message: "Wrong channel key" }] }.to_json unless request.env.fetch('HTTP_IFTTT_CHANNEL_KEY') == ENV.fetch("IFFT_SERVICE_KEY")
 
-  {
-    data: [
-      { label: 'Country register', value: 'country' },
-      { label: 'Government domain register', value: 'government-domain' },
-    ]
-  }.to_json
+  response = JSON.parse(HTTP.get('https://register.register.gov.uk/records.json'))
+
+  label_and_values = response.each do |register_id, info|
+    { label: info["item"]["text"], value: register_id }
+  end
+
+  { data: label_and_values }.to_json
 end
 
 post '/ifttt/v1/triggers/registers' do
