@@ -17,7 +17,7 @@ post '/ifttt/v1/test/setup' do
         "triggers": {
           "search-trigger": {
             "keywords": "what then"
-          }
+          },
           "registers": {
             "register": "country"
           }
