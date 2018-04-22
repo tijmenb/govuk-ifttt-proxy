@@ -26,7 +26,7 @@ end
 
 # https://platform.ifttt.com/docs/api_reference
 post '/ifttt/v1/triggers/search-trigger' do
-  halt 401 unless request.env.fetch('HTTP_IFTTT_CHANNEL_KEY') == ENV.fetch("IFFT_SERVICE_KEY")
+  halt 401, { errors: [ { message: "Wrong channel key" }] }.to_json unless request.env.fetch('HTTP_IFTTT_CHANNEL_KEY') == ENV.fetch("IFFT_SERVICE_KEY")
 
   data = JSON.parse(request.body.read)
   keywords = data.dig("triggerFields", "keywords")
