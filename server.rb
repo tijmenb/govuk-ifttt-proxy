@@ -21,3 +21,13 @@ post '/ifttt/v1/test/setup' do
     }
   }.to_json
 end
+
+post '/ifttt/v1/triggers/search-trigger' do
+  halt 401 unless request.env.fetch('HTTP_IFTTT_CHANNEL_KEY') == ENV["IFFT_SERVICE_KEY"]
+
+  entries = []
+
+  {
+    "data": entries,
+  }.to_json
+end
