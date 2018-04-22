@@ -65,7 +65,7 @@ post '/ifttt/v1/triggers/search-trigger' do
   { data: entries }.to_json
 end
 
-get '/ifttt/v1/triggers/registers/fields/register/options' do
+post '/ifttt/v1/triggers/registers/fields/register/options' do
   halt 401, { errors: [ { message: "Wrong channel key" }] }.to_json unless request.env.fetch('HTTP_IFTTT_CHANNEL_KEY') == ENV.fetch("IFFT_SERVICE_KEY")
 
   {
