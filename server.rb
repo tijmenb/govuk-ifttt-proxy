@@ -81,10 +81,22 @@ post '/ifttt/v1/triggers/registers' do
   halt 401, { errors: [ { message: "Wrong channel key" }] }.to_json unless request.env.fetch('HTTP_IFTTT_CHANNEL_KEY') == ENV.fetch("IFFT_SERVICE_KEY")
 
   data = JSON.parse(request.body.read)
-  register = data.dig("triggerFields", "register")
+  register_id = data.dig("triggerFields", "register")
 
-  halt 400, { errors: [ { message: "Register not specified" }] }.to_json unless register
+  halt 400, { errors: [ { message: "Register not specified" }] }.to_json unless register_id
 
-  entries = []
+  # This will stop working once there are more than 5000 entries in a register
+  response = JSON.parse(HTTP.get("https://#{register_id}.register.gov.uk/entries.json?limit=5000"))
+
+  entries = response.reverse.first(data["limit"] || 50).map do |entry|
+    {
+      title: "https://#{register_id}.register.gov.uk/record/#{entry["key"]} has been updated",
+      meta: {
+        id: entry["index-entry-number"],
+        timestamp: Time.parse(entry["entry-timestamp"]),
+      }
+    }
+  end
+
   { data: entries }.to_json
 end
