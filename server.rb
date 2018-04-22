@@ -28,7 +28,10 @@ post '/ifttt/v1/triggers/search-trigger' do
   # halt 401 unless request.env.fetch('HTTP_IFTTT_CHANNEL_KEY') == ENV.fetch("IFFT_SERVICE_KEY")
 
   data = JSON.parse(request.body.read)
-  keywords = data["triggerFields"]["keywords"]
+  keywords = data.dig("triggerFields", "keywords")
+
+  halt 400 unless keywords
+
   limit = data["limit"] || 50
   response = JSON.parse(HTTP.get("https://www.gov.uk/api/search.json", params: { count: limit, q: keywords, order: '-public_timestamp', fields: %w[public_timestamp link title]}))
 
