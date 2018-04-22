@@ -71,7 +71,7 @@ post '/ifttt/v1/triggers/registers/fields/register/options' do
   response = JSON.parse(HTTP.get('https://register.register.gov.uk/records.json'))
 
   label_and_values = response.each do |register_id, info|
-    { label: info["item"]["text"], value: register_id }
+    { label: info["item"][0]["text"], value: register_id }
   end
 
   { data: label_and_values }.to_json
