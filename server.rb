@@ -90,7 +90,7 @@ post '/ifttt/v1/triggers/registers' do
 
   entries = response.reverse.first(data["limit"] || 50).map do |entry|
     {
-      title: "https://#{register_id}.register.gov.uk/record/#{entry["key"]} has been updated",
+      updated_record: "https://#{register_id}.register.gov.uk/record/#{entry["key"]}",
       meta: {
         id: entry["index-entry-number"],
         timestamp: Time.parse(entry["entry-timestamp"]).to_i,
