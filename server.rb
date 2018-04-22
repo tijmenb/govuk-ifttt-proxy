@@ -85,12 +85,16 @@ post '/ifttt/v1/triggers/registers' do
 
   halt 400, { errors: [ { message: "Register not specified" }] }.to_json unless register_id
 
+  register_data = JSON.parse(HTTP.get("https://#{register_id}.register.gov.uk/register"))
+  register_name = register_data["register-record"]["text"]
+
   # This will stop working once there are more than 5000 entries in a register
   response = JSON.parse(HTTP.get("https://#{register_id}.register.gov.uk/entries.json?limit=5000"))
 
   entries = response.reverse.first(data["limit"] || 50).map do |entry|
     {
       updated_record: "https://#{register_id}.register.gov.uk/record/#{entry["key"]}",
+      register_name: register_name,
       meta: {
         id: entry["index-entry-number"],
         timestamp: Time.parse(entry["entry-timestamp"]).to_i,
