@@ -20,7 +20,10 @@ post '/ifttt/v1/test/setup' do
           },
           "registers": {
             "register": "country"
-          }
+          },
+          "companies": {
+            "company_number": "09426399"
+          },
         }
       }
     }
