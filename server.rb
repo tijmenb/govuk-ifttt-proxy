@@ -35,10 +35,13 @@ post '/ifttt/v1/triggers/search-trigger' do
 
   search_params = {
     count: data["limit"] || 50,
-    q: keywords,
     order: '-public_timestamp',
     fields: %w[public_timestamp link title]
   }
+
+  unless keywords == ""
+    search_params.merge!(q: keywords)
+  end
 
   response = JSON.parse(HTTP.get("https://www.gov.uk/api/search.json", params: search_params))
 
