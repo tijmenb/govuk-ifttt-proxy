@@ -29,10 +29,7 @@ post '/ifttt/v1/triggers/search-trigger' do
 
   data = JSON.parse(request.body.read)
   keywords = data["triggerFields"]["keywords"]
-  url = "https://www.gov.uk/api/search.json?q=#{keywords}&order=-public_timestamp&fields=public_timestamp,link,title"
-  puts "URL: #{url}"
-
-  response = JSON.parse(HTTP.get(url))
+  response = JSON.parse(HTTP.get("https://www.gov.uk/api/search.json", params: { q: keywords, order: '-public_timestamp', fields: %w[public_timestamp link title]}))
 
   puts "Search response: #{response}"
 
