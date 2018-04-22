@@ -33,8 +33,14 @@ post '/ifttt/v1/triggers/search-trigger' do
 
   halt 400, { errors: [ { message: "There weren't any keywords!" }] }.to_json unless keywords
 
-  limit = data["limit"] || 50
-  response = JSON.parse(HTTP.get("https://www.gov.uk/api/search.json", params: { count: limit, q: keywords, order: '-public_timestamp', fields: %w[public_timestamp link title]}))
+  search_params = {
+    count: data["limit"] || 50,
+    q: keywords,
+    order: '-public_timestamp',
+    fields: %w[public_timestamp link title]
+  }
+
+  response = JSON.parse(HTTP.get("https://www.gov.uk/api/search.json", params: search_params))
 
   entries = response["results"].map do |result|
     public_timestamp = Time.parse(result["public_timestamp"])
