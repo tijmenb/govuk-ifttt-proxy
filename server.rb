@@ -18,6 +18,9 @@ post '/ifttt/v1/test/setup' do
           "search-trigger": {
             "keywords": "what then"
           }
+          "registers": {
+            "register": "country"
+          }
         }
       }
     }
@@ -59,5 +62,28 @@ post '/ifttt/v1/triggers/search-trigger' do
     }
   end
 
+  { data: entries }.to_json
+end
+
+get '/ifttt/v1/triggers/registers/fields/register/options' do
+  halt 401, { errors: [ { message: "Wrong channel key" }] }.to_json unless request.env.fetch('HTTP_IFTTT_CHANNEL_KEY') == ENV.fetch("IFFT_SERVICE_KEY")
+
+  {
+    data: [
+      { label: 'Country register', value: 'country' },
+      { label: 'Government domain register', value: 'government-domain' },
+    ]
+  }.to_json
+end
+
+post '/ifttt/v1/triggers/registers' do
+  halt 401, { errors: [ { message: "Wrong channel key" }] }.to_json unless request.env.fetch('HTTP_IFTTT_CHANNEL_KEY') == ENV.fetch("IFFT_SERVICE_KEY")
+
+  data = JSON.parse(request.body.read)
+  register = data.dig("triggerFields", "register")
+
+  halt 400, { errors: [ { message: "Register not specified" }] }.to_json unless register
+
+  entries = []
   { data: entries }.to_json
 end
