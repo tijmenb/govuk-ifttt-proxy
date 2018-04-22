@@ -116,15 +116,15 @@ post '/ifttt/v1/triggers/companies' do
 
   halt 400, { errors: [ { message: "Company number not specified" }] }.to_json unless company_number
 
-  filing_history = JSON.parse(HTTP.auth(ENV["COMPANIES_HOUSE_API_KEY"]).get("https://api.companieshouse.gov.uk/company/#{company_number}/filing-history"))["items"]
+  response = JSON.parse(HTTP.auth(ENV.fetch("COMPANIES_HOUSE_API_KEY")).get("https://api.companieshouse.gov.uk/company/#{company_number}/filing-history"))
 
-  entries = filing_history.first(data["limit"] || 50).map do |entry|
+  entries = response["items"].first(data["limit"] || 50).map do |entry|
     {
       summary: entry["description"],
       company_url: "https://beta.companieshouse.gov.uk/company/#{company_number}",
       meta: {
         id: entry["transaction_id"],
-        timestamp: Time.parse(entry["action_date"]).to_i,
+        timestamp: Time.parse(entry["date"]).to_i,
       }
     }
   end
